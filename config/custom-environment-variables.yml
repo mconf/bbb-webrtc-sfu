@@ -3,6 +3,9 @@ kurento:
   __format: json
 
 redisHost: REDIS_HOST
+redisPort: REDIS_PORT
+redisPassword: REDIS_PASSWORD
+
 mcs-port: MCS_PORT
 mcs-address: MCS_HOST
 
@@ -31,7 +34,13 @@ rnp:
 
 recordWebcams: RECORD_WEBCAMS
 recordScreenSharing: RECORD_SCREENSHARE
+recordingMediaProfile: RECORDING_MEDIA_PROFILE
+recordingFormat: RECORDING_FORMAT
 
 processes:
   __name: SFU_PROCESSES
   __format: json
+
+conference-media-specs:
+  codec_video_main: CODEC_VIDEO_MAIN
+  codec_video_content: CODEC_VIDEO_CONTENT
