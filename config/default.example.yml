@@ -1,12 +1,21 @@
 kurento:
   - ip: ""
     url: ws://HOST/kurento
+    # mediaType: (main|audio|content)
+
+# balancing-strategy: can be either ROUND_ROBIN or MEDIA_TYPE. The MEDIA_TYPE only
+# works properly if you annotated the configured kurento instances in the
+# 'kurento' config parameter with a mediaType field (main|audio|content) which
+# will specify what will each server handle. Default is ROUND_ROBIN
+balancing-strategy: ROUND_ROBIN
 video-transposing-ceiling: 50
 audio-transposing-ceiling: 100
 localIpAddress: ""
 acceptSelfSignedCertificate: false
 redisHost: 127.0.0.1
 redisPort: "6379"
+# Uncomment to set a password if Redis requires auth.
+# redisPassword: foobared
 clientPort: "3008"
 minVideoPort: 30000
 maxVideoPort: 33000
@@ -23,14 +32,15 @@ to-stream: to-sfu-redis-channel
 from-stream: from-stream-sfu
 to-html5: to-html5-redis-channel
 common-message-version: 2.x
-screenshareKeyframeInterval: 2
+screenshareKeyframeInterval: 0
+screenshareEnableFlashRTPBridge: false
 
 recordScreenSharing: true
 recordWebcams: true
 recordingBasePath: file:///var/kurento
 
-recordingMediaProfile: MKV_VIDEO_ONLY
-recordingFormat: mkv
+recordingMediaProfile: WEBM_VIDEO_ONLY
+recordingFormat: webm
 redisExpireTime: 1209600 # 14 days as per the akka keys
 
 # mcs-core entrypoint configured on nginx
@@ -51,9 +61,14 @@ bbb-stream:
   container_type: docker
   bigbluebutton_url: BBBHOST
   bigbluebutton_secret: BBBSECRET
+  bot_name: BBBBOTNAME
   bot_join_options:
     userdata-html5autoswaplayout: false
     userdata-html5hidepresentation: false
+  gop:
+    rnp: 5
+    youtube: 12
+    rtmp: 12
   k8s:
     namespace: default
     template:
@@ -72,18 +87,36 @@ bbb-stream:
                 value: ""
               - name: OUTPUT
                 value: ""
+              - name: "RTMP"
+                value: "rtmp"
+              - name: "GOP"
+                value: ""
             restartPolicy: OnFailure
         backoffLimit: 0
+
+rnp:
+  oauth2:
+    client_id: client_id
+    client_secret: client_secret
+    redirect_uri: redirect_uri
+    host_ip: 0.0.0.0
+    base_url: videornpurl
+
 processes:
 - path: ./lib/mcs-core/process.js
 - path: ./lib/screenshare/ScreenshareProcess
 - path: ./lib/video/VideoProcess.js
 - path: ./lib/audio/AudioProcess.js
+# media-server-adapters: path could refer to a npm module
 media-server-adapters:
 - path: kurento/kurento.js
   name: Kurento
 - path: freeswitch/freeswitch.js
   name: Freeswitch
+# strategies: path could refer to a npm module
+strategies:
+- path: ./voice-switching-handler.js
+  name: VOICE_SWITCHING
 
 # Codec values (_video_main, _video_content): it'll force the specified codec. Put the 'ANY' value
 # to prevent forcing a specific codec. If you wanna add other codecs (e.g.: VP9)
@@ -92,8 +125,8 @@ media-server-adapters:
 # _video_main refers to webcam/main video content, _video_content refers to
 # screenshare/content:slides streams.
 conference-media-specs:
-  codec_video_main: H264
-  codec_video_content: H264
+  codec_video_main: VP8
+  codec_video_content: VP8
   codec_audio: "ANY"
   H264:
     profile_level_id: "42e01f"
