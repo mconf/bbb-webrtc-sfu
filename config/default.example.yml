@@ -35,6 +35,9 @@ common-message-version: 2.x
 screenshareKeyframeInterval: 0
 screenshareEnableFlashRTPBridge: false
 
+#Enable subtitle in video composition (MCU Users,only)
+enableSubtitle: true
+
 recordScreenSharing: true
 recordWebcams: true
 recordingBasePath: file:///var/kurento
@@ -157,4 +160,3 @@ conference-media-specs:
     ptime: "20"
     minptime: "10"
     maxptime: "40"
-
