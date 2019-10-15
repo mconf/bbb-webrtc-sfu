@@ -39,6 +39,9 @@ screenshareEnableFlashRTPBridge: false
 screenshareSubscriberSpecSlave: false
 videoSubscriberSpecSlave: false
 
+#Enable subtitle in video composition (MCU Users,only)
+enableSubtitle: true
+
 recordScreenSharing: true
 recordWebcams: true
 recordingBasePath: file:///var/kurento
