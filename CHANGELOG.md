@@ -6,6 +6,13 @@ Final releases will consolidate all intermediate changes in chronological order.
 
 For previous changes, see the [release notes](https://github.com/bigbluebutton/bbb-webrtc-sfu/releases).
 
+### v2.25.0-beta.2
+
+* fix(livekit): guaratee width field on every screen share stop evt
+* fix(livekit): guarantee voiceConf in the screenshare unpublish event
+* chore: bump Node (22) and npm (10.x) engine requirements
+* chore: bump .nvmrc to lts/jod (22)
+
 ### v2.25.0-beta.1
 
 * fix(livekit): hold a web user's camera stop-on-unpublish across a reconnect
